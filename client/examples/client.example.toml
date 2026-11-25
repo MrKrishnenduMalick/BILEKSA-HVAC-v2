@@ -1,0 +1,164 @@
+# Example: a paying client's client.toml (fictional company "Lone Star Air Services").
+# Copy to client/client.toml in the client's own repo copy, then replace every value.
+# Guide: CLIENT-CONFIGURATION-GUIDE.md
+
+[branding]
+product_name = "BILEKSA"                 # shown as "Powered by BILEKSA"
+company_name = "Lone Star Air Services"    # dashboard header; defaults to business.name
+tagline = "AI receptionist for HVAC contractors"
+logo = "branding/logo.svg"               # path inside client/ (SVG or PNG, square works best)
+accent = "#60a5fa"                       # brand accent colour (#RRGGBB)
+support_email = "support@bileksa.com"
+support_phone = "+1 (713) 555-0199"
+# "marketing" = the BILEKSA sales site at / (master repo and public demo)
+# "login"     = / goes straight to sign-in (every paying client's deployment)
+public_site = "login"
+
+[business]
+name = "Lone Star Air Services"
+contact_email = "office@lonestarair.example"
+contact_phone = "+17135550300"
+notification_email = "dispatch@lonestarair.example"   # where call alerts and summaries go
+address = "8800 Westheimer Rd, Houston, TX 77063"
+website = "https://lonestarair.example"
+timezone = "America/Chicago"
+
+[routing]
+transfer_number = "+17135550301"        # where the AI transfers callers (direct line, not the forwarded number)
+fallback_number = "+17135550302"        # backup line; also used when the AI is unavailable
+emergency_number = "+17135550303"       # tried first for emergencies
+transfer_mode = "blind"                 # blind | warm
+transfer_in_hours = true
+transfer_after_hours = false
+transfer_emergencies_after_hours = true
+emergency_preference = "transfer_then_callback"   # or callback_only
+after_hours_message = "We're closed right now. I'll take your details and the team will call you back first thing."
+unavailable_message = ""
+
+[assistant]
+# Extra instructions approved by the company. They never override the safety or honesty rules.
+instructions = """
+Mention our 24/7 emergency service when a caller has no heat or no cooling.
+For commercial callers, ask for the business name and how many units are affected.
+"""
+appointment_policy = "Visits are booked in 2-hour windows between 8 AM and 6 PM, Monday to Saturday. The team confirms every appointment by phone."
+
+[hours]   # 24-hour clock, "closed" for closed days
+monday = "07:00-19:00"
+tuesday = "07:00-19:00"
+wednesday = "07:00-19:00"
+thursday = "07:00-19:00"
+friday = "07:00-19:00"
+saturday = "08:00-16:00"
+sunday = "closed"
+
+[[holidays]]
+date = 2026-12-25
+label = "Christmas Day"
+hours = "closed"
+
+[service_area]
+label = "West Houston"
+zip_codes = ["77024", "77042", "77057", "77063", "77077", "77079", "77082"]
+
+# ── Services: segment = residential | commercial | industrial (omit = everyone) ──
+# Prices in dollars. Omit a price to have the AI say "the team will confirm".
+[[services]]
+name = "AC repair"
+description = "Diagnosis and repair of central AC, heat pumps and mini-splits"
+segment = "residential"
+price_min = 89
+price_max = 450
+price_note = "diagnostic fee waived with repair"
+
+[[services]]
+name = "Furnace repair"
+description = "Gas and electric furnace diagnosis and repair"
+segment = "residential"
+price_min = 99
+price_max = 500
+
+[[services]]
+name = "AC and furnace tune-up"
+description = "Seasonal maintenance and safety check"
+price_min = 129
+price_max = 129
+
+[[services]]
+name = "System replacement"
+description = "New AC, furnace or heat pump installation with free in-home estimate"
+price_note = "free estimate; price depends on the system"
+
+[[services]]
+name = "Ductless mini-split installation"
+segment = "residential"
+price_note = "free estimate"
+
+[[services]]
+name = "Indoor air quality"
+description = "Filtration, air purifiers, humidifiers and dehumidifiers"
+price_note = "quoted after assessment"
+
+[[services]]
+name = "Commercial rooftop unit service"
+description = "Repair and maintenance of packaged rooftop units and VRF systems"
+segment = "commercial"
+price_note = "quoted per site"
+
+[[services]]
+name = "Commercial maintenance contract"
+description = "Scheduled maintenance plans for offices, retail and restaurants"
+segment = "commercial"
+price_note = "quoted per site"
+
+[[services]]
+name = "Walk-in cooler and freezer repair"
+description = "Restaurant and grocery refrigeration"
+segment = "commercial"
+price_note = "emergency service available"
+
+[[services]]
+name = "Industrial ventilation and process cooling"
+segment = "industrial"
+price_note = "site survey required"
+
+# ── Knowledge base: answers the AI may repeat word for word ──
+[[faqs]]
+question = "Do you offer financing?"
+answer = "Yes. Financing is available on new systems with approved credit; the team can explain the options."
+
+[[faqs]]
+question = "Which brands do you service?"
+answer = "We service all major brands, including Carrier, Trane, Lennox, Goodman and Rheem."
+
+[[faqs]]
+question = "Do you charge for estimates?"
+answer = "Estimates for new systems are free. Repair visits have a diagnostic fee, waived if you go ahead with the repair."
+
+[[policies]]
+question = "What is your warranty?"
+answer = "Repairs carry a 1-year parts and labour warranty. New systems carry the manufacturer's warranty plus our 2-year labour warranty."
+
+[[policies]]
+question = "What is your cancellation policy?"
+answer = "Please give us at least 4 hours' notice to cancel or reschedule a visit."
+
+# ── Emergency rules: the fixed safety instructions always come first. Here you only decide
+#    whether a category triggers a transfer and add approved extra wording.
+#    Built-in keys: gas, co, smoke, burning_smell, sparks, dangerous_malfunction,
+#    refrigerant_leak, refrigeration_failure. Custom categories need a key, label and instructions.
+[[emergency_rules]]
+key = "gas"
+transfer = true
+instructions = "Our technicians will not enter a building with a gas smell until the gas company has cleared it."
+
+[[emergency_rules]]
+key = "refrigeration_failure"
+transfer = true
+instructions = "Keep the walk-in doors closed and move high-value stock to another cooler if you can do so safely."
+
+[[emergency_rules]]
+key = "flooding_near_furnace"
+label = "Water flooding near the furnace"
+transfer = true
+instructions = "Keep away from the furnace and any electrical outlets near the water."
